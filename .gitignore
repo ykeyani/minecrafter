@@ -1,6 +1,6 @@
 /venv
 /.idea
-/backups
-/plugins
+/backups/*
+/plugins/*
 inventory.yml
 notes
