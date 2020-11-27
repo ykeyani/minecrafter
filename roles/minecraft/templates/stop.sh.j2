@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+pid=$1;
+
+./rcon.py localhost {{ rcon_port }} "{{ rcon_password }}" "say Server will shutdown in 30 seconds!";
+sleep 10
+./rcon.py localhost {{ rcon_port }} "{{ rcon_password }}" "say Server will shutdown in 20 seconds!!";
+sleep 10
+./rcon.py localhost {{ rcon_port }} "{{ rcon_password }}" "say Server will shutdown in 10 seconds!!!";
+sleep 10
+./rcon.py localhost {{ rcon_port }} "{{ rcon_password }}" stop;
+
+tail --pid=$pid -f /dev/null;

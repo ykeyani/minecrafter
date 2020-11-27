@@ -1,0 +1,44 @@
+---
+
+- name: Minecraft service is stopped
+  systemd:
+    state: stopped
+    name: minecraft
+    enabled: yes
+    daemon_reload: yes
+  ignore_errors: yes
+  tags:
+    - always
+
+- include: configure.yml
+  tags:
+    - install
+    - restore
+
+- include: restore.yml
+  tags:
+    - restore
+
+- include: install.yml
+  tags:
+    - install
+    - restore
+
+- include: plugins.yml
+  tags:
+    - install
+    - plugins
+
+- include: backup.yml
+  tags:
+    - backup
+
+- name: Minecraft service is running
+  become: yes
+  systemd:
+    state: started
+    name: minecraft
+    enabled: yes
+    daemon_reload: yes
+  tags:
+    - always

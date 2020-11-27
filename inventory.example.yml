@@ -1,0 +1,11 @@
+all:
+  hosts:
+    0.0.0.0:
+      ansible_user: root
+      level_seed: 7257160633286220967
+      java_memory: 3500M
+      motd: "knowledge is power, guard it well."
+  vars:
+    admin_username: perfectly_respectable_admin
+    admin_uuid: [you can find your uuid here https://mcuuid.net/ and probably other places too...]
+    rcon_password: "something_long_and_complicated"

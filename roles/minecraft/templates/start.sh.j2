@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/usr/bin/java -server -Xms{{ java_memory }} -Xmx{{ java_memory }} -XX:+UseG1GC -XX:+CMSClassUnloadingEnabled -XX:ParallelGCThreads=4 -XX:MinHeapFreeRatio=5 -XX:MaxHeapFreeRatio=10 -jar {{ spigot_exec }} nogui

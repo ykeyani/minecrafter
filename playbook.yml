@@ -1,0 +1,6 @@
+---
+
+- name: Minecraft
+  hosts: all
+  roles:
+    - minecraft

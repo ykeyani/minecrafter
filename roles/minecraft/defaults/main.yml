@@ -1,0 +1,19 @@
+spigot_build_tools_url: https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+spigot_build_tools: /home/minecraft/BuildTools.jar
+spigot_target_version: 1.16.4
+spigot_dir: /home/minecraft/spigot
+spigot_exec: "spigot-{{ spigot_target_version }}.jar"
+
+#home_dir: /home/minecraft
+
+backup_dir: "{{ playbook_dir }}/backups"
+
+level_seed: ""
+motd: "Welcome"
+server_port: 25565
+white_list: "true"
+pvp: "false"
+view_distance: 7
+gamemode: survival
+rcon_port: 25575
+rcon_password: "YmtZ@fE+TxNBJhv*S?7rYCVmrn3Db3dy8=Sq%*z7U-6ESqwKEdm&&s6zt&@qqGZ_"

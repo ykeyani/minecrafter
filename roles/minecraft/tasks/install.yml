@@ -1,0 +1,8 @@
+---
+
+- name: Build Spigot
+  become: yes
+  become_user: minecraft
+  shell: "java -jar {{ spigot_build_tools }} --rev {{ spigot_target_version }}"
+  args:
+    chdir: "{{ spigot_dir }}/"

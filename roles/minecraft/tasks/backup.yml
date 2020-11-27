@@ -1,0 +1,27 @@
+- name: Minecraft service is stopped
+  systemd:
+    state: stopped
+    name: minecraft
+    enabled: yes
+
+- name: set archive name
+  set_fact:
+    archive_name: "minecraft-{{ ansible_date_time.epoch }}.7z"
+
+- name: Compress minecraft installation
+  shell: "7za a {{ archive_name }} world world_nether world_the_end plugins whitelist.json ops.json"
+  args:
+    chdir: "{{ spigot_dir }}"
+    creates: "{{ archive_name }}"
+
+- name: Fetch backup
+  fetch:
+    src: "{{ spigot_dir }}/{{ archive_name }}"
+    dest: "{{ playbook_dir }}/backups/"
+    flat: yes
+
+- name: Minecraft service is running
+  systemd:
+    state: started
+    name: minecraft
+    enabled: yes

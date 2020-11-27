@@ -1,0 +1,19 @@
+[Unit]
+Description=Minecraft Server
+After=network.target
+
+[Service]
+WorkingDirectory={{ spigot_dir }}
+User=minecraft
+Group=minecraft
+Type=simple
+
+ExecStart=/usr/bin/bash {{ spigot_dir }}/start.sh
+ExecReload=/usr/bin/bash {{ spigot_dir }}/reload.sh
+ExecStop=/usr/bin/bash {{ spigot_dir }}/stop.sh $MAINPID
+
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

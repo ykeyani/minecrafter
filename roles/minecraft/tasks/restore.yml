@@ -1,0 +1,50 @@
+---
+
+- name: Locate Backups
+  find:
+    paths: "{{ playbook_dir }}/backups/"
+    patterns: "*.7z"
+  register: found_files
+  delegate_to: localhost
+
+- name: Get latest backup
+  set_fact:
+    latest_file: "{{ found_files.files | sort(attribute='mtime',reverse=true) | first }}"
+
+- name: Get backup paths
+  set_fact:
+    backup_src: "{{ latest_file.path }}"
+    backup_dest: "{{ spigot_dir }}/{{ latest_file.path | basename }}"
+    archive_name: "{{ latest_file.path | basename }}"
+
+- name: upload and extract backup
+  block:
+  - name: backup copied
+    copy:
+      src: "{{ backup_src }}"
+      dest: "{{ backup_dest }}"
+      owner: minecraft
+      group: minecraft
+      mode: "0644"
+    register: copy_result
+  - name: existing removed
+    file:
+      path: "{{ spigot_dir }}/{{ item }}"
+      state: absent
+    with_items:
+      - plugins
+      - world
+      - world_nether
+      - world_the_end
+    when: copy_result.changed
+  - name: Extract minecraft backup
+    shell: "7za x {{ archive_name }} -y"
+    args:
+      chdir: "{{ spigot_dir }}"
+    when: copy_result.changed
+  - name: backup is removed
+    file:
+      path: "{{ backup_dest }}"
+      state: absent
+  become: yes
+  become_user: minecraft

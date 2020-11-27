@@ -1,0 +1,45 @@
+---
+
+- name: Locate local plugins
+  find:
+    paths: "{{ playbook_dir }}/plugins/"
+    patterns: "*.jar"
+  register: local_plugins_paths
+  delegate_to: localhost
+
+- name: Locate remote plugins
+  find:
+    paths: "{{ spigot_dir }}/plugins/"
+    patterns: "*.jar"
+  register: remote_plugins_paths
+
+- name: set facts...
+  set_fact:
+    local_plugins: "{{ local_plugins_paths.files | map(attribute='path') | map('basename') | list }}"
+    remote_plugins: "{{ remote_plugins_paths.files | map(attribute='path') | map('basename') | list }}"
+
+- name: calculate differences
+  set_fact:
+    plugin_diffs: "{{ remote_plugins | reject('in', local_plugins) | list }}"
+
+- name: remove old plugins
+  file:
+    path: "{{ spigot_dir }}/plugins/{{ item }}"
+    state: absent
+  with_items: "{{ plugin_diffs }}"
+
+- name: ensure plugins dir exists
+  file:
+    path: "{{ spigot_dir }}/plugins"
+    state: directory
+    owner: minecraft
+    group: minecraft
+
+- name: copy plugins
+  copy:
+    src: "{{ item }}"
+    dest: "{{ spigot_dir }}/plugins/{{ item | basename }}"
+    owner: minecraft
+    group: minecraft
+    mode: "0644"
+  with_items: "{{ local_plugins_paths.files | map(attribute='path') | list }}"

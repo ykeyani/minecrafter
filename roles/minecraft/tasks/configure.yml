@@ -1,0 +1,112 @@
+---
+
+- name: Dependencies are Installed
+  become: yes
+  dnf:
+    name:
+      - git
+      - java-1.8.0-openjdk-devel
+      - screen
+      - p7zip
+
+- name: Minecraft group exists
+  become: yes
+  group:
+    name: minecraft
+    state: present
+
+- name: Minecraft user exists
+  become: yes
+  user:
+    name: minecraft
+    group: minecraft
+    state: present
+    create_home: yes
+
+- name: Minecraft server port is open (tcp)
+  become: yes
+  firewalld:
+    port: "{{ server_port }}/tcp"
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: Minecraft server port is open (udp)
+  become: yes
+  firewalld:
+    port: "{{ server_port }}/udp"
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: Git configured
+  git_config:
+    name: core.autocrlf
+    scope: global
+    state: absent
+
+
+- name: Build tools exist
+  become: yes
+  become_user: minecraft
+  get_url:
+    url: "{{ spigot_build_tools_url }}"
+    dest: "{{ spigot_build_tools }}"
+    owner: minecraft
+    group: minecraft
+    mode: '0740'
+
+- name: Spigot directory exists
+  become: yes
+  become_user: minecraft
+  file:
+    path: "{{ spigot_dir }}"
+    state: directory
+    owner: minecraft
+    group: minecraft
+    mode: '0755'
+
+- name: minecraft configured
+  become: yes
+  become_user: minecraft
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ spigot_dir }}/{{ item }}"
+  with_items:
+    - eula.txt
+    - server.properties
+    - ops.json
+    - whitelist.json
+
+- name: command files
+  become: yes
+  become_user: minecraft
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ spigot_dir }}/{{ item }}"
+    owner: minecraft
+    group: minecraft
+    mode: "0740"
+  with_items:
+    - start.sh
+    - stop.sh
+    - reload.sh
+
+- name: rcon script
+  become: yes
+  become_user: minecraft
+  copy:
+    src: "{{ playbook_dir }}/scripts/rcon.py"
+    dest: "{{ spigot_dir }}/rcon.py"
+    owner: minecraft
+    group: minecraft
+    mode: "0740"
+
+- name: Minecraft service files
+  become: yes
+  template:
+    src: minecraft.service.j2
+    dest: /etc/systemd/system/minecraft.service
+    owner: root
+    group: root
+    mode: "0644"
