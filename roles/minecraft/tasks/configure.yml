@@ -6,7 +6,6 @@
     name:
       - git
       - java-1.8.0-openjdk-devel
-      - screen
       - p7zip
 
 - name: Minecraft group exists
