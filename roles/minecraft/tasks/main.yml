@@ -14,6 +14,7 @@
   tags:
     - install
     - restore
+    - config
 
 - include: restore.yml
   tags:
@@ -23,10 +24,12 @@
   tags:
     - install
     - restore
+    - update
 
 - include: plugins.yml
   tags:
     - install
+    - update
     - plugins
 
 - include: backup.yml
