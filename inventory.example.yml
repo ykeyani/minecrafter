@@ -6,6 +6,12 @@ all:
       java_memory: 3500M
       motd: "knowledge is power, guard it well."
   vars:
+    spigot_target_version: 1.16.4
     admin_username: perfectly_respectable_admin
     admin_uuid: [you can find your uuid here https://mcuuid.net/ and probably other places too...]
     rcon_password: "something_long_and_complicated"
+    whitelist:
+      - name: "friendA"
+        uuid: [ their uuid ]
+      - name: "friendB"
+        uuid: [ their uuid ]

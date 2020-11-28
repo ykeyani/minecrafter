@@ -1,1 +1,7 @@
-[]
+#jinja2: trim_blocks:False
+[
+{% for user in whitelist %}  {
+    "uuid": "{{ user.uuid }}",
+    "name": "{{ user.name }}"
+  }{% if not loop.last %}{{ ",\n" }}{% endif %}{% endfor %}
+]
